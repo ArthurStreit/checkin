@@ -110,7 +110,6 @@ class InscricoesController extends AppController
     public function checkin($inscricaoId)
     {
         $this->request->allowMethod(['post']);
-        $this->log("Iniciando check-in para inscrição ID: $inscricaoId", 'debug');
     
         $enviarEmail = $this->request->getData('enviarEmail') ?? false;
     
@@ -119,8 +118,6 @@ class InscricoesController extends AppController
                 'contain' => ['Usuarios', 'Eventos'],
             ]);
         } catch (\Exception $e) {
-            $this->log("Erro ao buscar inscrição: {$e->getMessage()}", 'error');
-    
             if ($this->request->is('ajax')) {
                 $this->set([
                     'success' => false,
@@ -142,15 +139,13 @@ class InscricoesController extends AppController
                     $email = new Mailer('default');
                     $email->setTo($inscricao->usuario->email)
                         ->setSubject('Check-in realizado com sucesso!')
-                        ->setEmailFormat('html')
-                        ->send("
+                        ->deliver("
                             Olá {$inscricao->usuario->nome},<br><br>
                             Você realizou o check-in no evento: <strong>{$inscricao->evento->nome}</strong>.<br>
                             Data do Evento: {$inscricao->evento->data_inicio} - {$inscricao->evento->data_fim}.<br><br>
                             Obrigado por participar!<br>
                             Equipe Checkin System.
                         ");
-                    $this->log("E-mail enviado com sucesso para {$inscricao->usuario->email}.", 'debug');
                 } catch (\Exception $e) {
                     $this->log("Erro ao enviar o e-mail: {$e->getMessage()}", 'error');
                 }
@@ -168,8 +163,6 @@ class InscricoesController extends AppController
             $this->Flash->success(__('Check-in realizado com sucesso!'));
             return $this->redirect(['action' => 'index']);
         }
-    
-        $this->log("Erro ao salvar inscrição no banco de dados.", 'error');
     
         if ($this->request->is('ajax')) {
             $this->set([

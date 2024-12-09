@@ -14,16 +14,30 @@ function realizarCheckin(inscricao_id) {
             "enviarEmail": true
         },
         success: function (response) {
-            if (response.success) {
+            console.log("Resposta do servidor:", response);
+
+            if (response && response.success) {
                 alert(response.message || "Check-in realizado com sucesso!");
-                window.location.reload();
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } else {
-                alert("Erro ao realizar o check-in: " + (response.message || "Erro desconhecido."));
+                const errorMsg = response && response.message
+                    ? response.message
+                    : "Erro desconhecido ao realizar o check-in.";
+                alert("Erro ao realizar o check-in: " + errorMsg);
+                console.error("Detalhes do erro:", response);
             }
         },
-        error: function () {
+        error: function (xhr, status, error) {
             alert("Erro ao realizar o check-in. Por favor, tente novamente.");
-        }
+            console.error("Erro na requisição AJAX:", {
+                status: status,
+                error: error,
+                response: xhr.responseText,
+            });
+        },
     });
 }
 
