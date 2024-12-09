@@ -152,11 +152,8 @@ class InscricoesController extends AppController
             }
     
             if ($this->request->is('ajax')) {
-                $this->set([
-                    'success' => true,
-                    'message' => __('Check-in realizado com sucesso!'),
-                    '_serialize' => ['success', 'message'],
-                ]);
+                $this->set('inscricao', $inscricao);
+                $this->viewBuilder()->setTemplate('checkin');
                 return;
             }
     
@@ -175,67 +172,73 @@ class InscricoesController extends AppController
     
         $this->Flash->error(__('Erro ao realizar o check-in.'));
         return $this->redirect(['action' => 'index']);
-    }    
+    }
 
     public function cancelCheckin($inscricaoId)
     {
         $this->request->allowMethod(['post']);
-        $this->log("Iniciando cancelamento de check-in para inscrição ID: $inscricaoId", 'debug');
-
+    
         $enviarEmail = $this->request->getData('enviarEmail') ?? false;
-
+    
         try {
             $inscricao = $this->Inscricoes->get($inscricaoId, [
                 'contain' => ['Usuarios', 'Eventos'],
             ]);
         } catch (\Exception $e) {
-            $this->log("Erro ao buscar inscrição: {$e->getMessage()}", 'error');
-
-            $this->set([
-                'success' => false,
-                'message' => __('Erro ao buscar a inscrição.'),
-                '_serialize' => ['success', 'message'],
-            ]);
-            return;
+            if ($this->request->is('ajax')) {
+                $this->set([
+                    'success' => false,
+                    'message' => __('Erro ao buscar a inscrição.'),
+                    '_serialize' => ['success', 'message'],
+                ]);
+                return;
+            }
+    
+            $this->Flash->error(__('Erro ao buscar a inscrição.'));
+            return $this->redirect(['action' => 'index']);
         }
-
+    
         $inscricao->status = 'cancelada';
-
+    
         if ($this->Inscricoes->save($inscricao)) {
             if ($enviarEmail) {
                 try {
                     $email = new Mailer('default');
                     $email->setTo($inscricao->usuario->email)
                         ->setSubject('Check-in cancelado!')
-                        ->setEmailFormat('html')
-                        ->send("
+                        ->deliver("
                             Olá {$inscricao->usuario->nome},<br><br>
                             Seu check-in no evento: <strong>{$inscricao->evento->nome}</strong> foi cancelado.<br><br>
                             Caso tenha sido um engano, entre em contato.<br>
                             Equipe Checkin System.
                         ");
-                    $this->log("E-mail enviado com sucesso para {$inscricao->usuario->email}.", 'debug');
                 } catch (\Exception $e) {
                     $this->log("Erro ao enviar o e-mail: {$e->getMessage()}", 'error');
                 }
             }
-
+    
+            if ($this->request->is('ajax')) {
+                $this->set('inscricao', $inscricao);
+                $this->viewBuilder()->setTemplate('cancel_checkin');
+                return;
+            }
+    
+            $this->Flash->success(__('Check-in cancelado com sucesso!'));
+            return $this->redirect(['action' => 'index']);
+        }
+    
+        if ($this->request->is('ajax')) {
             $this->set([
-                'success' => true,
-                'message' => __('Check-in cancelado com sucesso!'),
+                'success' => false,
+                'message' => __('Erro ao cancelar o check-in.'),
                 '_serialize' => ['success', 'message'],
             ]);
             return;
         }
-
-        $this->log("Erro ao cancelar inscrição no banco de dados.", 'error');
-
-        $this->set([
-            'success' => false,
-            'message' => __('Erro ao cancelar o check-in.'),
-            '_serialize' => ['success', 'message'],
-        ]);
-    }
+    
+        $this->Flash->error(__('Erro ao cancelar o check-in.'));
+        return $this->redirect(['action' => 'index']);
+    }    
 
     public function enviarEmailTeste()
     {

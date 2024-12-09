@@ -50,7 +50,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/eventos/delete/*', ['controller' => 'Eventos', 'action' => 'delete']);
 
         $builder->post('/inscricoes/checkin/*', ['controller' => 'Inscricoes', 'action' => 'checkin']);
-        $builder->post('/inscricoes/cancel-checkin/:id', ['controller' => 'Inscricoes', 'action' => 'cancelCheckin'])->setPass(['id']);
+        $builder->post('/inscricoes/cancel-checkin/*', ['controller' => 'Inscricoes', 'action' => 'cancelCheckin']);
         $builder->connect('/inscricoes', ['controller' => 'Inscricoes', 'action' => 'index']);
         $builder->connect('/inscricoes/view/*', ['controller' => 'Inscricoes', 'action' => 'view']);
         $builder->connect('/inscricoes/add', ['controller' => 'Inscricoes', 'action' => 'add']);

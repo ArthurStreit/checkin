@@ -10,25 +10,14 @@ function realizarCheckin(inscricao_id) {
     $.ajax({
         url: "/inscricoes/checkin/" + inscricao_id,
         type: "POST",
+        dataType: "html",
         data: {
             "enviarEmail": true
         },
         success: function (response) {
-            console.log("Resposta do servidor:", response);
+            console.log("Resposta HTML recebida do servidor:", response);
 
-            if (response && response.success) {
-                alert(response.message || "Check-in realizado com sucesso!");
-
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
-            } else {
-                const errorMsg = response && response.message
-                    ? response.message
-                    : "Erro desconhecido ao realizar o check-in.";
-                alert("Erro ao realizar o check-in: " + errorMsg);
-                console.error("Detalhes do erro:", response);
-            }
+            $("body").html(response);
         },
         error: function (xhr, status, error) {
             alert("Erro ao realizar o check-in. Por favor, tente novamente.");
@@ -47,19 +36,22 @@ function cancelarCheckin(inscricao_id) {
     $.ajax({
         url: "/inscricoes/cancel-checkin/" + inscricao_id,
         type: "POST",
+        dataType: "html",
         data: {
             "enviarEmail": true
         },
         success: function (response) {
-            if (response.success) {
-                alert(response.message || "Check-in cancelado com sucesso!");
-                window.location.reload();
-            } else {
-                alert("Erro ao cancelar o check-in: " + (response.message || "Erro desconhecido."));
-            }
+            console.log("Resposta HTML recebida do servidor:", response);
+
+            $("body").html(response);
         },
-        error: function () {
+        error: function (xhr, status, error) {
             alert("Erro ao cancelar o check-in. Por favor, tente novamente.");
-        }
+            console.error("Erro na requisição AJAX:", {
+                status: status,
+                error: error,
+                response: xhr.responseText,
+            });
+        },
     });
 }
