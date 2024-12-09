@@ -57,6 +57,8 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/inscricoes/edit/*', ['controller' => 'Inscricoes', 'action' => 'edit']);
         $builder->connect('/inscricoes/delete/*', ['controller' => 'Inscricoes', 'action' => 'delete']);
 
+        $builder->post('/certificados/gerarCertificado/:id', ['controller' => 'Certificados', 'action' => 'gerarCertificado'])->setPass(['id']);
+        $builder->post('/certificados/emitir-certificado/:id', ['controller' => 'Certificados', 'action' => 'emitirCertificado'])->setPass(['id']);
         $builder->connect('/certificados', ['controller' => 'Certificados', 'action' => 'index']);
         $builder->connect('/certificados/view/*', ['controller' => 'Certificados', 'action' => 'view']);
         $builder->connect('/certificados/add', ['controller' => 'Certificados', 'action' => 'add']);

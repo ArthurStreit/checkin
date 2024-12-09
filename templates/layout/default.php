@@ -57,5 +57,6 @@ $cakeDescription = 'Checkin Management System';
     </main>
     <?= $this->Html->script('https://code.jquery.com/jquery-3.6.0.min.js') ?>
     <?= $this->Html->script('checkin') ?>
+    <?= $this->Html->script('certificado') ?>
 </body>
 </html>

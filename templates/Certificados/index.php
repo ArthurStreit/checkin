@@ -1,4 +1,6 @@
 <div class="certificados index content">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/certificado.js"></script>
     <?= $this->Html->link(__('Novo Certificado'), ['action' => 'add'], ['class' => 'btn btn-primary float-end mb-3']) ?>
     <h3><?= __('Certificados') ?></h3>
     <div class="table-responsive">
@@ -25,6 +27,9 @@
                         <?= $this->Html->link(__('Visualizar'), ['action' => 'view', $certificado->id], ['class' => 'btn btn-sm btn-info']) ?>
                         <?= $this->Html->link(__('Editar'), ['action' => 'edit', $certificado->id], ['class' => 'btn btn-sm btn-warning']) ?>
                         <?= $this->Form->postLink(__('Deletar'), ['action' => 'delete', $certificado->id], ['confirm' => __('Tem certeza que quer deletar # {0}?', $certificado->id), 'class' => 'btn btn-sm btn-danger']) ?>
+                    </td>
+                    <td>
+                    <button onclick="emitirCertificado(<?= $certificado->inscricao_id ?>)" class="btn btn-success">Emitir Certificado</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
