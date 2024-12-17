@@ -23,16 +23,19 @@
 
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
+use Psr\Http\Message\ServerRequestInterface;
+use App\Application;
+use Authentication\Middleware\AuthenticationMiddleware;
 
 return function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
 
     $routes->scope('/', function (RouteBuilder $builder): void {
 
-        $builder->connect('/', ['controller' => 'Usuarios', 'action' => 'add']);
+        $builder->connect('/', ['controller' => 'Usuarios', 'action' => 'login']);
         $builder->connect('/pages/*', 'Pages::display');
 
-        $builder->connect('/login', ['controller' => 'Usuarios', 'action' => 'login']);
+
         $builder->connect('/logout', ['controller' => 'Usuarios', 'action' => 'logout']);
 
         $builder->get('/email-teste', ['controller' => 'Inscricoes', 'action' => 'enviarEmailTeste']);
@@ -51,6 +54,8 @@ return function (RouteBuilder $routes): void {
 
         $builder->post('/inscricoes/checkin/*', ['controller' => 'Inscricoes', 'action' => 'checkin']);
         $builder->post('/inscricoes/cancel-checkin/*', ['controller' => 'Inscricoes', 'action' => 'cancelCheckin']);
+        $builder->post('/inscricoes/sync', ['controller' => 'Inscricoes', 'action' => 'sync']);
+        $builder->get('/inscricoes/sync_success', ['controller' => 'Inscricoes', 'action' => 'sync_success']);
         $builder->connect('/inscricoes', ['controller' => 'Inscricoes', 'action' => 'index']);
         $builder->connect('/inscricoes/view/*', ['controller' => 'Inscricoes', 'action' => 'view']);
         $builder->connect('/inscricoes/add', ['controller' => 'Inscricoes', 'action' => 'add']);
@@ -59,6 +64,7 @@ return function (RouteBuilder $routes): void {
 
         $builder->post('/certificados/gerarCertificado/:id', ['controller' => 'Certificados', 'action' => 'gerarCertificado'])->setPass(['id']);
         $builder->post('/certificados/emitir-certificado/:id', ['controller' => 'Certificados', 'action' => 'emitirCertificado'])->setPass(['id']);
+        $builder->connect('/certificados/validar-certificado', ['controller' => 'Certificados', 'action' => 'validarCertificado']);
         $builder->connect('/certificados', ['controller' => 'Certificados', 'action' => 'index']);
         $builder->connect('/certificados/view/*', ['controller' => 'Certificados', 'action' => 'view']);
         $builder->connect('/certificados/add', ['controller' => 'Certificados', 'action' => 'add']);

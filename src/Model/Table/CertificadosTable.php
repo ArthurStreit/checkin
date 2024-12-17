@@ -75,7 +75,7 @@ class CertificadosTable extends Table
         $validator
             ->scalar('url_validacao')
             ->requirePresence('url_validacao', 'create')
-            ->notEmptyString('url_validacao');
+            ->allowEmptyString('url_validacao');
 
         return $validator;
     }

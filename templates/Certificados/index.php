@@ -1,6 +1,4 @@
 <div class="certificados index content">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/js/certificado.js"></script>
     <?= $this->Html->link(__('Novo Certificado'), ['action' => 'add'], ['class' => 'btn btn-primary float-end mb-3']) ?>
     <h3><?= __('Certificados') ?></h3>
     <div class="table-responsive">
@@ -30,6 +28,7 @@
                     </td>
                     <td>
                     <button onclick="emitirCertificado(<?= $certificado->inscricao_id ?>)" class="btn btn-success">Emitir Certificado</button>
+                    <button onclick="window.location.href='/certificados/validar-certificado'" class="btn btn-info">Validar Certificado</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -253,4 +253,40 @@ class InscricoesController extends AppController
             $this->Flash->error('Erro ao enviar o e-mail: ' . $e->getMessage());
         }
     }
+
+    public function sync()
+    {
+        $this->request->allowMethod(['post']);
+        $data = $this->request->getData();
+    
+        if (empty($data['inscricao_id']) || empty($data['status'])) {
+            return $this->response
+                ->withStatus(400)
+                ->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => 'Dados inválidos.']));
+        }
+    
+        try {
+            $inscricao = $this->Inscricoes->get($data['inscricao_id']);
+            $inscricao->status = $data['status'];
+            if ($this->Inscricoes->save($inscricao)) {
+                return $this->response
+                    ->withType('application/json')
+                    ->withStringBody(json_encode(['success' => true, 'message' => 'Check-in sincronizado com sucesso.']));
+            }
+            throw new \Exception('Erro ao salvar inscrição.');
+        } catch (\Exception $e) {
+            \Cake\Log\Log::error('Erro na sincronização: ' . $e->getMessage());
+            return $this->response
+                ->withStatus(500)
+                ->withType('application/json')
+                ->withStringBody(json_encode(['success' => false, 'message' => 'Erro interno no servidor.']));
+        }
+    }    
+
+    public function sync_success()
+    {
+        $this->render('sync_success');
+    }
+
 }

@@ -110,17 +110,18 @@ class CertificadosController extends AppController
     public function emitirCertificado($inscricaoId)
     {
         $this->request->allowMethod(['post']);
-    
+        
         try {
             $inscricao = $this->Certificados->Inscricoes->get($inscricaoId, [
                 'contain' => ['Usuarios', 'Eventos']
             ]);
-    
+            
             $certificado = $this->Certificados->newEntity([
                 'inscricao_id' => $inscricaoId,
                 'codigo_validacao' => uniqid(),
+                'url_validacao' => '/certificados/validar-certificado/' . uniqid(),
             ]);
-    
+            
             if ($this->Certificados->save($certificado)) {
                 $email = new Mailer('default');
                 $email->setTo($inscricao->usuario->email)
@@ -129,36 +130,46 @@ class CertificadosController extends AppController
                     ->deliver("
                         Olá {$inscricao->usuario->nome},<br><br>
                         O certificado do evento <strong>{$inscricao->evento->nome}</strong> foi emitido com sucesso.<br>
-                        Código de validação: <strong>{$certificado->codigo_validacao}</strong>.<br><br>
+                        Código de validação: <strong>{$certificado->codigo_validacao}</strong>.<br>
+                        Para validar, acesse o link: <a href='{$certificado->url_validacao}'>{$certificado->url_validacao}</a>.<br><br>
                         Obrigado por participar!<br>
                         Equipe Checkin System.
                     ");
-    
+                
                 $this->set(compact('certificado', 'inscricao'));
                 $this->viewBuilder()->setTemplate('emitir_certificado');
                 return;
             }
-    
+
             throw new \Exception('Erro ao salvar o certificado.');
         } catch (\Exception $e) {
             $this->Flash->error(__('Erro ao emitir o certificado: ' . $e->getMessage()));
             return $this->redirect(['action' => 'index']);
         }
+    }
+
+    public function validarCertificado()
+    {
+        $this->request->allowMethod(['post', 'get']);
+    
+        if ($this->request->is('post')) {
+            $codigoValidacao = $this->request->getData('codigo_validacao');
+    
+            $certificado = $this->Certificados->find()
+                ->where(['codigo_validacao' => $codigoValidacao])
+                ->contain(['Inscricoes.Usuarios', 'Inscricoes.Eventos'])
+                ->first();
+    
+            if ($certificado) {
+                $this->Flash->success(__('Certificado válido.'));
+                $this->set('certificado', $certificado);
+                $this->set('inscricao', $certificado->inscricao);
+            } else {
+                $this->Flash->error(__('Código de validação inválido.'));
+            }
+        }
+    
+        $this->viewBuilder()->setTemplate('validar_certificado');
     }    
 
-    private function gerarCertificado($inscricao)
-    {
-        $conteudo = "
-            <h1>Certificado de Participação</h1>
-            <p>Certificamos que <strong>{$inscricao->usuario->nome}</strong> participou do evento <strong>{$inscricao->evento->nome}</strong>, realizado de <strong>{$inscricao->evento->data_inicio->format('d/m/Y')}</strong> a <strong>{$inscricao->evento->data_fim->format('d/m/Y')}</strong>.</p>
-            <p>Organização</p>
-        ";
-
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($conteudo);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
-        return $dompdf->output();
-    }
 }

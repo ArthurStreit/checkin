@@ -57,6 +57,11 @@ $cakeDescription = 'Checkin Management System';
     </main>
     <?= $this->Html->script('https://code.jquery.com/jquery-3.6.0.min.js') ?>
     <?= $this->Html->script('checkin') ?>
-    <?= $this->Html->script('certificado') ?>
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.3.0/dist/pouchdb.min.js"></script>
+    <?php if ($this->fetch('title') === 'Certificados'): ?>
+    <?= $this->Html->script('certificado.js') ?>
+    <?php else: ?>
+    <?= $this->Html->script('offline.js') ?>
+    <?php endif; ?>
 </body>
 </html>

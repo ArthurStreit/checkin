@@ -12,6 +12,7 @@ function emitirCertificado(inscricao_id) {
         type: "POST",
         dataType: "html",
         success: function (response) {
+            console.log("Resposta do servidor:", response);
             $("body").html(response);
         },
         error: function (xhr, status, error) {
@@ -22,5 +23,30 @@ function emitirCertificado(inscricao_id) {
                 response: xhr.responseText,
             });
         },
-    });    
+    });
+}
+
+function validarCertificado() {
+    const codigoValidacao = $('#codigo_validacao').val();
+
+    console.log("Validando certificado com código:", codigoValidacao);
+
+    $.ajax({
+        url: "/certificados/validar-certificado",
+        type: "POST",
+        data: { codigo_validacao: codigoValidacao },
+        dataType: "html",
+        success: function (response) {
+            console.log("Resposta da validação:", response);
+            $("body").html(response);
+        },
+        error: function (xhr, status, error) {
+            alert("Erro ao validar o certificado. Tente novamente.");
+            console.error("Erro na validação AJAX:", {
+                status: status,
+                error: error,
+                response: xhr.responseText,
+            });
+        },
+    });
 }

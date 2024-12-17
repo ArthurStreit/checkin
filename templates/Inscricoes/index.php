@@ -31,10 +31,14 @@
                     </td>
                     <td>
                         <button onclick="realizarCheckin(<?= $inscricao->id ?>)" class="btn btn-primary btn-sm">Check-in</button>
-                        <button onclick="cancelarCheckin(<?= $inscricao->id ?>)" class="btn btn-danger">Cancelar Check-in</button>
+                        <button onclick="cancelarCheckin(<?= $inscricao->id ?>)" class="btn btn-danger btn-sm">Cancelar Check-in</button>
+                        <button onclick="registrarCheckinOffline(<?= $inscricao->id ?>)" class="btn btn-secondary btn-sm">Salvar Offline</button>
+                        <button onclick="sincronizarCheckins()" class="btn btn-success btn-sm">Sincronizar</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.3.0/dist/pouchdb.min.js"></script>
+                <?= $this->Html->script('offline'); ?>
             </tbody>
         </table>
     </div>
