@@ -40,13 +40,14 @@ $cakeDescription = 'Checkin Management System';
             <a href="<?= $this->Url->build('/') ?>"><span>Checkin</span> Sistema</a>
         </div>
         <div class="top-nav-links">
-            <a href="<?= $this->Url->build(['controller' => 'Usuarios', 'action' => 'index']) ?>">Usuários</a>
+            <button id="toggleOfflineMode" class="btn btn-warning" onclick="toggleModoOffline()">Ativar Modo Offline</button>
+            <button id="syncOfflineData" class="btn btn-success" onclick="sincronizarDados()">Sincronizar Dados</button>
+        </div>
+        <div class="top-nav-links">
             <a href="<?= $this->Url->build(['controller' => 'Eventos', 'action' => 'index']) ?>">Eventos</a>
             <a href="<?= $this->Url->build(['controller' => 'Inscricoes', 'action' => 'index']) ?>">Inscrições</a>
             <a href="<?= $this->Url->build(['controller' => 'Certificados', 'action' => 'index']) ?>">Certificados</a>
-            <a href="<?= $this->Url->build(['controller' => 'Presencas', 'action' => 'index']) ?>">Presenças</a>
             <a href="<?= $this->Url->build(['controller' => 'Logs', 'action' => 'index']) ?>">Logs</a>
-            <a href="<?= $this->Url->build(['controller' => 'Usuarios', 'action' => 'login']) ?>">Login</a>
         </div>
     </nav>
     <main class="main">
@@ -56,8 +57,9 @@ $cakeDescription = 'Checkin Management System';
         </div>
     </main>
     <?= $this->Html->script('https://code.jquery.com/jquery-3.6.0.min.js') ?>
-    <?= $this->Html->script('checkin') ?>
     <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.3.0/dist/pouchdb.min.js"></script>
+    <?= $this->Html->script('checkin') ?>
+    <?= $this->Html->script('modo_offline') ?>
     <?php if ($this->fetch('title') === 'Certificados'): ?>
     <?= $this->Html->script('certificado.js') ?>
     <?php else: ?>

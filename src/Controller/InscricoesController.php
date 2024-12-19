@@ -19,10 +19,7 @@ class InscricoesController extends AppController
      */
     public function index()
     {
-        $query = $this->Inscricoes->find()
-            ->contain(['Usuarios', 'Eventos']);
-        $inscricoes = $this->paginate($query);
-
+        $inscricoes = $this->paginate($this->Inscricoes->find()->contain(['Usuarios', 'Eventos']));
         $this->set(compact('inscricoes'));
         $this->viewBuilder()->setOption('serialize', ['inscricoes']);
     }
@@ -288,5 +285,13 @@ class InscricoesController extends AppController
     {
         $this->render('sync_success');
     }
+
+    public function offline()
+    {
+        $inscricoes = $this->Inscricoes->find('all', ['contain' => ['Usuarios', 'Eventos']])->toArray();
+        $this->set(compact('inscricoes'));
+        $this->render('offline'); // Renderiza a view offline.php
+    }
+    
 
 }

@@ -21,10 +21,7 @@ class CertificadosController extends AppController
      */
     public function index()
     {
-        $query = $this->Certificados->find()
-            ->contain(['Inscricoes']);
-        $certificados = $this->paginate($query);
-
+        $certificados = $this->paginate($this->Certificados->find()->contain(['Inscricoes']));
         $this->set(compact('certificados'));
         $this->viewBuilder()->setOption('serialize', ['certificados']);
     }
@@ -171,5 +168,29 @@ class CertificadosController extends AppController
     
         $this->viewBuilder()->setTemplate('validar_certificado');
     }    
+
+    public function offline()
+    {
+        $certificadosQuery = $this->Certificados->find('all', [
+            'contain' => ['Inscricoes']
+        ]);
+    
+        $certificados = [];
+        foreach ($certificadosQuery as $certificado) {
+            // Garante que os dados de Inscricoes estão em inscrico
+            $certificado->inscrico = $certificado->inscricoes;
+            unset($certificado->inscricoes);
+            $certificados[] = $certificado;
+        }
+    
+        $this->set(compact('certificados'));
+        $this->render('offline'); // Renderiza a view offline.php
+    }    
+    
+    
+    public function modoOffline()
+    {
+        $this->viewBuilder()->setTemplate('modo_offline');
+    }
 
 }

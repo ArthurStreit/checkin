@@ -17,9 +17,7 @@ class EventosController extends AppController
      */
     public function index()
     {
-        $query = $this->Eventos->find();
-        $eventos = $this->paginate($query);
-
+        $eventos = $this->paginate($this->Eventos);
         $this->set(compact('eventos'));
         $this->viewBuilder()->setOption('serialize', ['eventos']);
     }
@@ -99,4 +97,12 @@ class EventosController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function offline()
+    {
+        $eventos = $this->Eventos->find('all')->toArray();
+        $this->set(compact('eventos'));
+        $this->render('offline'); // Renderiza a view offline.php
+    }
+    
 }

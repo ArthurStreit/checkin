@@ -39,6 +39,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/logout', ['controller' => 'Usuarios', 'action' => 'logout']);
 
         $builder->get('/email-teste', ['controller' => 'Inscricoes', 'action' => 'enviarEmailTeste']);
+        $builder->connect('/modo-offline', ['controller' => 'Certificados', 'action' => 'modoOffline']);
 
         $builder->connect('/usuarios', ['controller' => 'Usuarios', 'action' => 'index']);
         $builder->connect('/usuarios/view/*', ['controller' => 'Usuarios', 'action' => 'view']);
@@ -51,6 +52,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/eventos/add', ['controller' => 'Eventos', 'action' => 'add']);
         $builder->connect('/eventos/edit/*', ['controller' => 'Eventos', 'action' => 'edit']);
         $builder->connect('/eventos/delete/*', ['controller' => 'Eventos', 'action' => 'delete']);
+        $builder->connect('/eventos/offline', ['controller' => 'Eventos', 'action' => 'offline']);
 
         $builder->post('/inscricoes/checkin/*', ['controller' => 'Inscricoes', 'action' => 'checkin']);
         $builder->post('/inscricoes/cancel-checkin/*', ['controller' => 'Inscricoes', 'action' => 'cancelCheckin']);
@@ -61,6 +63,7 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/inscricoes/add', ['controller' => 'Inscricoes', 'action' => 'add']);
         $builder->connect('/inscricoes/edit/*', ['controller' => 'Inscricoes', 'action' => 'edit']);
         $builder->connect('/inscricoes/delete/*', ['controller' => 'Inscricoes', 'action' => 'delete']);
+        $builder->connect('/inscricoes/offline', ['controller' => 'Inscricoes', 'action' => 'offline']);
 
         $builder->post('/certificados/gerarCertificado/:id', ['controller' => 'Certificados', 'action' => 'gerarCertificado'])->setPass(['id']);
         $builder->post('/certificados/emitir-certificado/:id', ['controller' => 'Certificados', 'action' => 'emitirCertificado'])->setPass(['id']);
